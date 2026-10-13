@@ -1,0 +1,20 @@
+---
+import '../styles/global.css';
+import { sampleDocument } from '../lib/docmd/sample';
+import { serializeDocMD, toSemanticMarkdown } from '../lib/docmd/format';
+
+const initial = sampleDocument;
+---
+<html lang="es">
+  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /><title>DocMD Studio</title></head>
+  <body>
+    <main class="shell">
+      <header class="topbar"><div><strong>DocMD</strong><span class="muted">Studio</span></div><span class="status">● Guardado local · Demo</span></header>
+      <section class="workspace">
+        <aside class="sidebar"><p class="eyebrow">DOCUMENTO</p><input value={initial.metadata.title} aria-label="Título del documento" /><p class="muted">▾ Documento</p><button class="active">▤ Introducción</button><button>＋ Nueva sección</button><div class="collab"><p class="eyebrow">COLABORADORES</p><span class="avatar">M</span><span class="avatar green">A</span><p class="muted">Presencia simulada</p></div></aside>
+        <section class="editor-pane"><div class="toolbar" aria-label="Formato"><button aria-label="Negrita"><b>B</b></button><button aria-label="Cursiva"><i>I</i></button><select aria-label="Fuente"><option>Inter</option><option>Serif</option><option>Mono</option></select><select aria-label="Alineación"><option>Izquierda</option><option>Centro</option><option>Justificado</option></select><button aria-label="Añadir comentario">◌</button></div><article class="paper" contenteditable="true" spellcheck="true" aria-label="Editor DocMD"><h1>{initial.sections[0].title}</h1>{initial.sections[0].blocks.map(block => <div class="block" data-id={block.id}>{block.markdown}</div>)}</article></section>
+        <aside class="inspector"><p class="eyebrow">REPRESENTACIONES</p><details open><summary>DocMD canónico</summary><pre>{JSON.stringify(initial, null, 2)}</pre></details><details open><summary>Markdown semántico</summary><pre>{toSemanticMarkdown(initial)}</pre></details><p class="hint">La colaboración multiusuario es una simulación local en esta demo.</p></aside>
+      </section>
+    </main>
+  </body>
+</html>
