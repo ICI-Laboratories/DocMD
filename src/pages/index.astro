@@ -5,16 +5,507 @@ import { serializeDocMD, toSemanticMarkdown } from '../lib/docmd/format';
 
 const initial = sampleDocument;
 ---
-<html lang="es">
-  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width" /><title>DocMD Studio</title></head>
+<!doctype html>
+<html lang="es" data-theme="auto">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DocMD Studio · SARA Prisma Glass OS</title>
+    <meta name="description" content="Prototipo de edición de formato DocMD con identidad SARA Prisma Glass OS por ICI Laboratories (FIME, Universidad de Colima)." />
+    <link rel="icon" type="image/svg+xml" href="/brands/sara/vectors/logos/prisma/sara_isotipo_prisma_claro.svg" />
+    <link rel="alternate icon" href="/brands/sara/vectors/logos/prisma/sara_isotipo_prisma_oscuro.svg" />
+  </head>
   <body>
+    <!-- Regla I · Ambient Light & Caustics -->
+    <div class="sara-ambient-light" aria-hidden="true"></div>
+
     <main class="shell">
-      <header class="topbar"><div><strong>DocMD</strong><span class="muted">Studio</span></div><span class="status">● Guardado local · Demo</span></header>
-      <section class="workspace">
-        <aside class="sidebar"><p class="eyebrow">DOCUMENTO</p><input value={initial.metadata.title} aria-label="Título del documento" /><p class="muted">▾ Documento</p><button class="active">▤ Introducción</button><button>＋ Nueva sección</button><div class="collab"><p class="eyebrow">COLABORADORES</p><span class="avatar">M</span><span class="avatar green">A</span><p class="muted">Presencia simulada</p></div></aside>
-        <section class="editor-pane"><div class="toolbar" aria-label="Formato"><button aria-label="Negrita"><b>B</b></button><button aria-label="Cursiva"><i>I</i></button><select aria-label="Fuente"><option>Inter</option><option>Serif</option><option>Mono</option></select><select aria-label="Alineación"><option>Izquierda</option><option>Centro</option><option>Justificado</option></select><button aria-label="Añadir comentario">◌</button></div><article class="paper" contenteditable="true" spellcheck="true" aria-label="Editor DocMD"><h1>{initial.sections[0].title}</h1>{initial.sections[0].blocks.map(block => <div class="block" data-id={block.id}>{block.markdown}</div>)}</article></section>
-        <aside class="inspector"><p class="eyebrow">REPRESENTACIONES</p><details open><summary>DocMD canónico</summary><pre>{JSON.stringify(initial, null, 2)}</pre></details><details open><summary>Markdown semántico</summary><pre>{toSemanticMarkdown(initial)}</pre></details><p class="hint">La colaboración multiusuario es una simulación local en esta demo.</p></aside>
+      <!-- Regla II · Glass OS Topbar con Bisel Especular -->
+      <header class="topbar" role="banner">
+        <div class="brand-section">
+          <div class="brand-mark-wrapper" title="SARA Prisma Glass OS · ICI Laboratories">
+            <img
+              src="/brands/sara/vectors/logos/prisma/sara_isotipo_prisma_claro.svg"
+              class="logo-light"
+              alt="Isotipo Prisma SARA"
+              width="28"
+              height="28"
+              loading="eager"
+            />
+            <img
+              src="/brands/sara/vectors/logos/prisma/sara_isotipo_prisma_oscuro.svg"
+              class="logo-dark"
+              alt="Isotipo Prisma SARA"
+              width="28"
+              height="28"
+              loading="eager"
+            />
+          </div>
+          <div class="brand-titles">
+            <div class="brand-title-row">
+              <span class="brand-title">DocMD</span>
+              <span class="brand-subtitle">Studio</span>
+              <span class="brand-badge">SARA</span>
+            </div>
+            <span class="brand-institution-line">ICI Laboratories · FIME · Universidad de Colima</span>
+          </div>
+        </div>
+
+        <div class="topbar-actions">
+          <span class="status-pill" role="status" title="Demostración estática. Las modificaciones en el editor no se guardan.">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span>Demo · Los cambios no se guardan</span>
+          </span>
+
+          <button
+            type="button"
+            id="theme-toggle"
+            class="theme-toggle-btn"
+            aria-label="Alternar tema visual claro y oscuro"
+            title="Alternar entre modo claro y modo oscuro"
+          >
+            <span id="theme-icon" class="theme-icon-slot" aria-hidden="true">
+              <svg class="theme-svg theme-svg-auto" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                <circle cx="12" cy="12" r="9"></circle>
+                <path d="M12 3v18" stroke-linecap="round"></path>
+                <path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"></path>
+              </svg>
+              <svg class="theme-svg theme-svg-dark" style="display:none;" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="currentColor" fill-opacity="0.15"></path>
+              </svg>
+              <svg class="theme-svg theme-svg-light" style="display:none;" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                <circle cx="12" cy="12" r="4" fill="currentColor" fill-opacity="0.2"></circle>
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" stroke-linecap="round"></path>
+              </svg>
+            </span>
+            <span id="theme-label">Tema</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Selector de paneles para vista móvil (accesible desde 360px) -->
+      <nav class="mobile-tabs-container" aria-label="Navegación de paneles de trabajo en móvil">
+        <div class="mobile-tabs-list" role="tablist" aria-label="Paneles del espacio de trabajo">
+          <button
+            type="button"
+            role="tab"
+            id="tab-sidebar"
+            class="mobile-tab-btn"
+            aria-selected="false"
+            tabindex="-1"
+            aria-controls="sidebar-panel"
+          >
+            <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+              <rect x="4" y="3.5" width="16" height="17" rx="3" fill="currentColor" fill-opacity="0.14" stroke="currentColor" stroke-width="1.75"></rect>
+              <path d="M8 8.5H16M8 12.5H16M8 16.5H12.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"></path>
+              <circle cx="15.5" cy="16.5" r="1.5" fill="#E65642"></circle>
+            </svg>
+            <span>Documento</span>
+          </button>
+          <button
+            type="button"
+            role="tab"
+            id="tab-editor"
+            class="mobile-tab-btn active"
+            aria-selected="true"
+            tabindex="0"
+            aria-controls="editor-panel"
+          >
+            <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+              <path d="M4 12C4 7.58 7.58 4 12 4C16.42 4 20 7.58 20 12C20 16.42 16.42 20 12 20H5.5C4.67 20 4 19.33 4 18.5V12Z" fill="currentColor" fill-opacity="0.14" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"></path>
+              <path d="M12 8L13.1 10.9L16 12L13.1 13.1L12 16L10.9 13.1L8 12L10.9 10.9L12 8Z" fill="#E65642" stroke="#E65642" stroke-width="1.1" stroke-linejoin="round"></path>
+            </svg>
+            <span>Editor</span>
+          </button>
+          <button
+            type="button"
+            role="tab"
+            id="tab-inspector"
+            class="mobile-tab-btn"
+            aria-selected="false"
+            tabindex="-1"
+            aria-controls="inspector-panel"
+          >
+            <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="16" rx="3.5" fill="currentColor" fill-opacity="0.14" stroke="currentColor" stroke-width="1.75"></rect>
+              <path d="M8.5 9.5L6 12L8.5 14.5M15.5 9.5L18 12L15.5 14.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M13 8.5L11 15.5" stroke="#159AB3" stroke-width="1.75" stroke-linecap="round"></path>
+            </svg>
+            <span>Inspector</span>
+          </button>
+        </div>
+      </nav>
+
+      <!-- Espacio de trabajo de tres paneles -->
+      <section class="workspace" id="workspace" data-active-panel="editor">
+        <!-- Panel Lateral: Estructura, Título y Metadatos -->
+        <aside class="sidebar" id="sidebar-panel" role="tabpanel" aria-labelledby="tab-sidebar" aria-label="Estructura y metadatos del documento">
+          <div class="sidebar-header-row">
+            <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+              <rect x="4" y="3.5" width="16" height="17" rx="3" fill="currentColor" fill-opacity="0.14" stroke="currentColor" stroke-width="1.75"></rect>
+              <path d="M8 8.5H16M8 12.5H16M8 16.5H12.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"></path>
+              <circle cx="15.5" cy="16.5" r="1.5" fill="#E65642"></circle>
+            </svg>
+            <p class="eyebrow">ESTRUCTURA DOCUMENTAL</p>
+          </div>
+
+          <div>
+            <label for="doc-title-input" class="nav-group-title">Título del documento</label>
+            <input
+              id="doc-title-input"
+              class="doc-title-input"
+              value={initial.metadata.title}
+              aria-label="Título del documento"
+              placeholder="Escribe el título..."
+            />
+          </div>
+
+          <div class="doc-meta-card">
+            <span><strong>Identificador:</strong> {initial.id}</span>
+            <span><strong>Versión DocMD:</strong> {initial.docmdVersion}</span>
+            <span><strong>Secciones activas:</strong> {initial.sections.length}</span>
+            <span><strong>Tema base:</strong> {initial.theme?.fontFamily || 'sans'} ({initial.theme?.fontSize || '16px'})</span>
+          </div>
+
+          <div>
+            <p class="nav-group-title">Secciones del archivo</p>
+            <div class="sections-list">
+              <button type="button" class="section-nav-btn active" aria-current="page">
+                <span class="section-btn-left">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                    <rect x="4" y="3.5" width="16" height="17" rx="3" fill="currentColor" fill-opacity="0.14"></rect>
+                    <path d="M8 8.5H16M8 12.5H16M8 16.5H12.5" stroke-linecap="round"></path>
+                  </svg>
+                  <span>{initial.sections[0].title}</span>
+                </span>
+                <span class="badge-prototype">Activa</span>
+              </button>
+
+              <button
+                type="button"
+                id="btn-new-section"
+                class="btn-prototype"
+                title="Acción no disponible en esta demostración"
+                aria-label="Nueva sección (no disponible)"
+                disabled
+              >
+                <span>Nueva sección</span>
+                <span class="badge-prototype">No disponible</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Colaboradores con presencia simulada explícita -->
+          <div class="collab-section">
+            <p class="eyebrow">COLABORADORES</p>
+            <div class="collab-avatars" aria-label="Colaboradores simulados en la sesión">
+              <span class="avatar avatar-coral" title="Usuario M (Presencia simulada)">M</span>
+              <span class="avatar avatar-sapphire" title="Usuario A (Presencia simulada)">A</span>
+            </div>
+            <p class="collab-note">
+              Presencia simulada de muestra. Demostración local estática.
+            </p>
+          </div>
+        </aside>
+
+        <!-- Panel Central: Editor y Papel -->
+        <section class="editor-pane" id="editor-panel" role="tabpanel" aria-labelledby="tab-editor" aria-label="Editor visual de documento">
+          <div class="toolbar" role="toolbar" aria-label="Herramientas de formato y visualización">
+            <div class="toolbar-group">
+              <button
+                type="button"
+                class="toolbar-btn"
+                id="btn-bold"
+                aria-label="Negrita (no disponible en demo)"
+                title="Formato negrita (no disponible en esta demostración)"
+                disabled
+              >
+                <b>B</b>
+              </button>
+              <button
+                type="button"
+                class="toolbar-btn"
+                id="btn-italic"
+                aria-label="Cursiva (no disponible en demo)"
+                title="Formato cursiva (no disponible en esta demostración)"
+                disabled
+              >
+                <i>I</i>
+              </button>
+            </div>
+
+            <div class="toolbar-divider" aria-hidden="true"></div>
+
+            <div class="toolbar-group">
+              <label for="select-font" class="sr-only" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0;">Tipografía de lectura</label>
+              <select id="select-font" class="toolbar-select" aria-label="Familia tipográfica del documento" title="Cambiar tipografía del lienzo">
+                <option value="sans" selected>Sans (Inter)</option>
+                <option value="serif">Serif (Lectura)</option>
+                <option value="mono">Mono (Código)</option>
+              </select>
+
+              <label for="select-align" class="sr-only" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0;">Alineación de lectura</label>
+              <select id="select-align" class="toolbar-select" aria-label="Alineación del contenido" title="Cambiar alineación del documento">
+                <option value="left" selected>Izquierda</option>
+                <option value="center">Centro</option>
+                <option value="justify">Justificado</option>
+              </select>
+            </div>
+
+            <div class="toolbar-divider" aria-hidden="true"></div>
+
+            <div class="toolbar-group">
+              <button
+                type="button"
+                class="toolbar-btn"
+                id="btn-comment"
+                aria-label="Comentarios (no disponible en demo)"
+                title="Comentarios (no disponible en esta demostración)"
+                disabled
+              >
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+              </button>
+              <span class="toolbar-inert-badge" title="Demostración estática. Las ediciones en el editor no se guardan ni actualizan las representaciones.">
+                Demo estática · Cambios sin guardar
+              </span>
+            </div>
+          </div>
+
+          <!-- Papel de lectura con contraste nítido -->
+          <div class="paper-scroll-container">
+            <article
+              id="paper-canvas"
+              class="paper"
+              contenteditable="true"
+              spellcheck="true"
+              aria-label="Lienzo de edición DocMD (demostración)"
+            >
+              <h1 id="paper-title" class="paper-heading">{initial.sections[0].title}</h1>
+              {initial.sections[0].blocks.map(block => (
+                <div
+                  class={`block ${block.presentation?.fontSize === '20px' ? 'lead-block' : ''}`}
+                  data-id={block.id}
+                  style={block.presentation?.align ? `text-align: ${block.presentation.align};` : undefined}
+                >
+                  {block.markdown}
+                </div>
+              ))}
+            </article>
+          </div>
+        </section>
+
+        <!-- Panel Derecho: Inspector de Representaciones y Exportaciones -->
+        <aside class="inspector" id="inspector-panel" role="tabpanel" aria-labelledby="tab-inspector" aria-label="Inspector de representaciones">
+          <div class="inspector-header-row">
+            <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="16" rx="3.5" fill="currentColor" fill-opacity="0.14" stroke="currentColor" stroke-width="1.75"></rect>
+              <path d="M8.5 9.5L6 12L8.5 14.5M15.5 9.5L18 12L15.5 14.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M13 8.5L11 15.5" stroke="#159AB3" stroke-width="1.75" stroke-linecap="round"></path>
+            </svg>
+            <p class="eyebrow">REPRESENTACIONES</p>
+          </div>
+          <p class="inspector-subtitle">Muestra estática de las representaciones del documento de ejemplo.</p>
+
+          <details class="inspector-details" open>
+            <summary class="inspector-summary">
+              <span>Estructura JSON (Ejemplo inicial)</span>
+              <span class="format-badge">JSON</span>
+            </summary>
+            <pre class="inspector-code-block" tabindex="0"><code>{JSON.stringify(initial, null, 2)}</code></pre>
+          </details>
+
+          <details class="inspector-details" open>
+            <summary class="inspector-summary">
+              <span>Markdown semántico (Ejemplo inicial)</span>
+              <span class="format-badge">MD</span>
+            </summary>
+            <pre class="inspector-code-block" tabindex="0"><code>{toSemanticMarkdown(initial)}</code></pre>
+          </details>
+
+          <details class="inspector-details">
+            <summary class="inspector-summary">
+              <span>Sintaxis extendida DocMD</span>
+              <span class="format-badge">Directivas</span>
+            </summary>
+            <pre class="inspector-code-block" tabindex="0"><code>{serializeDocMD(initial)}</code></pre>
+          </details>
+
+          <div class="inspector-note-box">
+            <p style="margin: 0 0 6px 0;"><strong>Aviso de demostración:</strong></p>
+            Las ediciones en el lienzo no se guardan ni modifican las representaciones en este panel, las cuales corresponden a la muestra inicial del documento.
+          </div>
+        </aside>
       </section>
+
+      <!-- Pie Institucional con Atribución SARA / ICI Laboratories -->
+      <footer class="footer-attribution" role="contentinfo">
+        <div class="footer-left">
+          <span><strong>DocMD Studio</strong> · SARA</span>
+        </div>
+        <div class="footer-right">
+          <span>ICI Laboratories · Facultad de Ingeniería Electromecánica (FIME) · Universidad de Colima</span>
+        </div>
+      </footer>
     </main>
+
+    <!-- Script de ergonomía de interfaz, accesibilidad y conmutación de paneles -->
+    <script>
+      // 1. Manejo de tema (Claro / Oscuro / Sistema) con protección ante almacenamiento no disponible
+      const themeToggle = document.getElementById('theme-toggle');
+      const themeIcon = document.getElementById('theme-icon');
+      const themeLabel = document.getElementById('theme-label');
+      const rootHtml = document.documentElement;
+
+      function safeGetStorage(key: string): string | null {
+        try {
+          return localStorage.getItem(key);
+        } catch {
+          return null;
+        }
+      }
+
+      function safeSetStorage(key: string, value: string): void {
+        try {
+          localStorage.setItem(key, value);
+        } catch {
+          // Ignorar de forma segura si el almacenamiento local está restringido
+        }
+      }
+
+      function getInitialTheme(): 'light' | 'dark' | 'auto' {
+        const stored = safeGetStorage('sara-theme');
+        if (stored === 'light' || stored === 'dark') return stored;
+        return 'auto';
+      }
+
+      function updateThemeIcons(theme: 'light' | 'dark' | 'auto') {
+        if (!themeIcon) return;
+        const autoSvg = themeIcon.querySelector('.theme-svg-auto') as HTMLElement | null;
+        const darkSvg = themeIcon.querySelector('.theme-svg-dark') as HTMLElement | null;
+        const lightSvg = themeIcon.querySelector('.theme-svg-light') as HTMLElement | null;
+
+        if (autoSvg) autoSvg.style.display = theme === 'auto' ? 'block' : 'none';
+        if (darkSvg) darkSvg.style.display = theme === 'dark' ? 'block' : 'none';
+        if (lightSvg) lightSvg.style.display = theme === 'light' ? 'block' : 'none';
+      }
+
+      function applyTheme(theme: 'light' | 'dark' | 'auto') {
+        updateThemeIcons(theme);
+        if (theme === 'auto') {
+          rootHtml.removeAttribute('data-theme');
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (themeLabel) themeLabel.textContent = prefersDark ? 'Oscuro (Auto)' : 'Claro (Auto)';
+        } else if (theme === 'dark') {
+          rootHtml.setAttribute('data-theme', 'dark');
+          if (themeLabel) themeLabel.textContent = 'Oscuro';
+        } else {
+          rootHtml.setAttribute('data-theme', 'light');
+          if (themeLabel) themeLabel.textContent = 'Claro';
+        }
+      }
+
+      let currentTheme = getInitialTheme();
+      applyTheme(currentTheme);
+
+      if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+          if (currentTheme === 'auto') {
+            currentTheme = 'dark';
+          } else if (currentTheme === 'dark') {
+            currentTheme = 'light';
+          } else {
+            currentTheme = 'auto';
+          }
+          safeSetStorage('sara-theme', currentTheme);
+          applyTheme(currentTheme);
+        });
+      }
+
+      // 2. Conmutación de paneles móviles con roving tabindex y navegación por teclado (Arrow, Home, End)
+      const workspace = document.getElementById('workspace');
+      const tabElements = Array.from(document.querySelectorAll<HTMLButtonElement>('.mobile-tabs-list [role="tab"]'));
+
+      function activateTab(index: number, shouldFocus: boolean = true) {
+        if (!tabElements[index] || !workspace) return;
+
+        tabElements.forEach((tab, idx) => {
+          const isSelected = idx === index;
+          tab.classList.toggle('active', isSelected);
+          tab.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+          tab.setAttribute('tabindex', isSelected ? '0' : '-1');
+        });
+
+        const activeTab = tabElements[index];
+        const panelId = activeTab.getAttribute('aria-controls');
+        if (panelId) {
+          const panelName = panelId.replace('-panel', '');
+          workspace.setAttribute('data-active-panel', panelName);
+        }
+
+        if (shouldFocus) {
+          activeTab.focus();
+        }
+      }
+
+      tabElements.forEach((tab, index) => {
+        tab.addEventListener('click', () => {
+          activateTab(index, false);
+        });
+
+        tab.addEventListener('keydown', (event: KeyboardEvent) => {
+          let nextIndex = index;
+          if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+            event.preventDefault();
+            nextIndex = (index + 1) % tabElements.length;
+            activateTab(nextIndex, true);
+          } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+            event.preventDefault();
+            nextIndex = (index - 1 + tabElements.length) % tabElements.length;
+            activateTab(nextIndex, true);
+          } else if (event.key === 'Home') {
+            event.preventDefault();
+            activateTab(0, true);
+          } else if (event.key === 'End') {
+            event.preventDefault();
+            activateTab(tabElements.length - 1, true);
+          }
+        });
+      });
+
+      // 3. Sincronización del título del documento con el lienzo
+      const titleInput = document.getElementById('doc-title-input') as HTMLInputElement | null;
+      const paperTitle = document.getElementById('paper-title');
+
+      if (titleInput && paperTitle) {
+        titleInput.addEventListener('input', () => {
+          paperTitle.textContent = titleInput.value || 'Sin título';
+        });
+      }
+
+      // 4. Controles tipográficos del lienzo (demostración reactiva local del modelo de presentación DocMD)
+      const selectFont = document.getElementById('select-font') as HTMLSelectElement | null;
+      const selectAlign = document.getElementById('select-align') as HTMLSelectElement | null;
+      const paperCanvas = document.getElementById('paper-canvas');
+
+      if (selectFont && paperCanvas) {
+        selectFont.addEventListener('change', () => {
+          if (selectFont.value === 'serif') {
+            paperCanvas.style.fontFamily = 'Georgia, Cambria, "Times New Roman", Times, serif';
+          } else if (selectFont.value === 'mono') {
+            paperCanvas.style.fontFamily = 'var(--sara-font-mono, monospace)';
+          } else {
+            paperCanvas.style.fontFamily = 'var(--sara-font-ui, sans-serif)';
+          }
+        });
+      }
+
+      if (selectAlign && paperCanvas) {
+        selectAlign.addEventListener('change', () => {
+          paperCanvas.style.textAlign = selectAlign.value;
+        });
+      }
+    </script>
   </body>
 </html>

@@ -1,1 +1,1020 @@
-body{margin:0;background:#f4f6f8;color:#17202a;font-family:Inter,system-ui,sans-serif}.shell{min-height:100vh}.topbar{height:64px;background:#fff;border-bottom:1px solid #e4e8ec;display:flex;align-items:center;justify-content:space-between;padding:0 28px;font-size:18px}.muted{color:#718096;font-size:13px;margin-left:8px}.status{color:#3d7a5b;font-size:12px}.workspace{display:grid;grid-template-columns:230px minmax(400px,1fr) 330px;min-height:calc(100vh - 64px)}.sidebar,.inspector{background:#fff;padding:28px 20px}.sidebar{border-right:1px solid #e4e8ec}.inspector{border-left:1px solid #e4e8ec}button,input,select{font:inherit}button{border:0;background:transparent;padding:10px;border-radius:7px;cursor:pointer;text-align:left}button:hover,.active{background:#edf3ff;color:#2859a8}.sidebar input{font-size:17px;border:0;border-bottom:1px solid #ddd;padding:8px 0;width:100%;margin-bottom:25px}.eyebrow{font-size:10px;letter-spacing:.12em;color:#8b98a8;font-weight:700}.collab{margin-top:50px;border-top:1px solid #eee;padding-top:20px}.avatar{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#e7b8a0;color:#713c26;font-size:12px}.green{background:#b5d7c0;color:#28613e;margin-left:-7px}.editor-pane{background:#f4f6f8}.toolbar{height:54px;background:#fff;border-bottom:1px solid #e4e8ec;display:flex;gap:4px;align-items:center;padding:0 24px}.toolbar select{border:1px solid #e4e8ec;border-radius:5px;padding:7px;background:white}.paper{background:white;max-width:760px;min-height:700px;margin:38px auto;padding:72px 80px;box-shadow:0 3px 15px #1c2b3a12;outline:none}.paper h1{font-size:34px;letter-spacing:-.03em}.block{padding:14px 10px;border-radius:4px;font-size:18px;line-height:1.7}.block:hover{outline:1px solid #c9d9f4;background:#fbfdff}.inspector details{margin:14px 0;border:1px solid #e4e8ec;border-radius:6px;padding:10px}.inspector summary{cursor:pointer;font-size:13px;font-weight:600}.inspector pre{white-space:pre-wrap;word-break:break-word;font-size:11px;color:#40546b;max-height:300px;overflow:auto}.hint{font-size:12px;line-height:1.5;color:#738096}@media(max-width:1000px){.workspace{grid-template-columns:190px 1fr}.inspector{display:none}}@media(max-width:650px){.workspace{display:block}.sidebar{display:none}.paper{margin:15px;padding:35px 25px;min-height:600px}.topbar{padding:0 15px}}
+@import './sara-tokens.css';
+
+:root {
+  --docmd-action-text: light-dark(#1A367A, #A8C8FF);
+  --docmd-accent-text: light-dark(#156A7A, #78F7EB);
+}
+
+/* ==========================================================================
+   SARA Prisma Glass OS — DocMD Studio Global Stylesheet
+   ICI Laboratories · FIME · Universidad de Colima (2026)
+   Responsive down to 360px · Reduced Motion Supported
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   0. Box sizing & CSS Reset
+   -------------------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--sara-font-ui, 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  color-scheme: light dark;
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-color: var(--sara-os-bg);
+  color: var(--sara-text-primary);
+  font-family: var(--sara-font-ui, 'Inter', -apple-system, BlinkMacSystemFont, sans-serif);
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* --------------------------------------------------------------------------
+   1. Regla I · Ambient Light & Caustics
+   "El vidrio requiere luz detrás"
+   -------------------------------------------------------------------------- */
+.sara-ambient-light {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 65% 50% at 12% 12%, var(--sara-caustic-cyan), transparent 72%),
+    radial-gradient(ellipse 60% 50% at 88% 88%, var(--sara-caustic-coral), transparent 72%),
+    radial-gradient(ellipse 45% 35% at 50% 45%, var(--sara-caustic-indigo), transparent 65%),
+    radial-gradient(ellipse 40% 30% at 75% 15%, var(--sara-caustic-sapphire), transparent 60%);
+}
+
+/* --------------------------------------------------------------------------
+   2. Main Shell & Structure
+   -------------------------------------------------------------------------- */
+.shell {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --------------------------------------------------------------------------
+   3. Regla II · Glass OS Topbar con Bisel Especular
+   -------------------------------------------------------------------------- */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  min-height: 64px;
+  background: var(--sara-glass-strong);
+  backdrop-filter: blur(25px) saturate(160%);
+  -webkit-backdrop-filter: blur(25px) saturate(160%);
+  border-bottom: 1px solid var(--sara-border-glass);
+  box-shadow:
+    inset 0 -1px 0 0 var(--sara-border-subtle),
+    inset 0 1px 1px 0 var(--sara-rim-specular),
+    var(--sara-shadow-glass-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 24px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.brand-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.brand-mark-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--sara-radius-md);
+  background: var(--sara-glass-subtle);
+  border: 1px solid var(--sara-border-glass);
+  box-shadow: inset 0 1px 1px 0 var(--sara-rim-specular);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.brand-mark-wrapper img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.logo-dark {
+  display: none;
+}
+.logo-light {
+  display: block;
+}
+
+html[data-theme="dark"] .logo-dark {
+  display: block;
+}
+html[data-theme="dark"] .logo-light {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) .logo-dark {
+    display: block;
+  }
+  html:not([data-theme="light"]) .logo-light {
+    display: none;
+  }
+}
+
+.brand-titles {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.brand-title {
+  font-family: var(--sara-font-display, inherit);
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--sara-text-primary);
+}
+
+.brand-subtitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--docmd-accent-text);
+}
+
+.brand-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 6px;
+  border-radius: var(--sara-radius-pill);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--sara-sapphire-100);
+  color: var(--docmd-action-text);
+  border: 1px solid var(--sara-border-glass);
+  margin-left: 4px;
+}
+
+.brand-institution-line {
+  font-size: 11px;
+  color: var(--sara-text-secondary);
+  letter-spacing: 0.01em;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--sara-radius-pill);
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--sara-udec-green-soft);
+  color: var(--sara-udec-green);
+  border: 1px solid var(--sara-border-glass);
+  white-space: nowrap;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--sara-udec-green);
+  display: inline-block;
+  box-shadow: 0 0 6px var(--sara-udec-green);
+}
+
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 8px 14px;
+  border-radius: var(--sara-radius-pill);
+  background: var(--sara-glass-subtle);
+  border: 1px solid var(--sara-border-glass);
+  color: var(--sara-text-primary);
+  box-shadow: inset 0 1px 1px 0 var(--sara-rim-specular);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.theme-toggle-btn:hover {
+  background: var(--sara-glass-base);
+  border-color: var(--sara-sapphire-500);
+}
+
+/* --------------------------------------------------------------------------
+   4. Mobile Panel Navigation Switcher (Accessible down to 360px)
+   -------------------------------------------------------------------------- */
+.mobile-tabs-container {
+  display: none;
+  position: sticky;
+  top: 64px;
+  z-index: 40;
+  background: var(--sara-glass-dock);
+  backdrop-filter: blur(25px) saturate(160%);
+  -webkit-backdrop-filter: blur(25px) saturate(160%);
+  border-bottom: 1px solid var(--sara-border-glass);
+  padding: 6px 10px;
+}
+
+.mobile-tabs-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  width: 100%;
+}
+
+.mobile-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 6px 8px;
+  border-radius: var(--sara-radius-md);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--sara-text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.mobile-tab-btn svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.mobile-tab-btn:hover {
+  background: var(--sara-glass-subtle);
+  color: var(--sara-text-primary);
+}
+
+.mobile-tab-btn.active {
+  background: var(--sara-sapphire-100);
+  color: var(--docmd-action-text);
+  border-color: var(--sara-sapphire-500);
+  box-shadow: inset 0 1px 1px 0 var(--sara-rim-specular);
+}
+
+/* --------------------------------------------------------------------------
+   5. Workspace Grid Layout
+   -------------------------------------------------------------------------- */
+.workspace {
+  display: grid;
+  grid-template-columns: 280px minmax(420px, 1fr) 350px;
+  flex: 1;
+  min-height: calc(100vh - 64px - 44px);
+}
+
+/* --------------------------------------------------------------------------
+   6. Sidebar (Document & Metadata)
+   -------------------------------------------------------------------------- */
+.sidebar {
+  background: var(--sara-glass-base);
+  backdrop-filter: blur(25px) saturate(160%);
+  -webkit-backdrop-filter: blur(25px) saturate(160%);
+  border-right: 1px solid var(--sara-border-glass);
+  box-shadow: inset -1px 0 0 0 var(--sara-border-subtle);
+  padding: 24px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+}
+
+.sidebar-header-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--docmd-accent-text);
+}
+
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sara-text-secondary);
+  font-weight: 700;
+  margin: 0;
+}
+
+.doc-title-input {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--sara-text-primary);
+  background: var(--sara-glass-subtle);
+  border: 1px solid var(--sara-border-glass);
+  border-radius: var(--sara-radius-md);
+  padding: 10px 14px;
+  min-height: 44px;
+  width: 100%;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.doc-title-input:focus {
+  outline: 2px solid var(--sara-sapphire-500);
+  outline-offset: 1px;
+  border-color: var(--sara-sapphire-500);
+  background: var(--sara-glass-strong);
+}
+
+.doc-meta-card {
+  background: var(--sara-glass-subtle);
+  border: 1px solid var(--sara-border-glass);
+  border-radius: var(--sara-radius-md);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--sara-text-secondary);
+}
+
+.doc-meta-card span strong {
+  color: var(--sara-text-primary);
+}
+
+.nav-group-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--sara-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 6px 0;
+}
+
+.sections-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.section-nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border-radius: var(--sara-radius-md);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--sara-text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.section-nav-btn:hover {
+  background: var(--sara-glass-subtle);
+}
+
+.section-nav-btn.active {
+  background: var(--sara-sapphire-100);
+  color: var(--docmd-action-text);
+  border-color: var(--sara-sapphire-500);
+  font-weight: 600;
+  box-shadow: inset 0 1px 1px 0 var(--sara-rim-specular);
+}
+
+.section-btn-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-nav-btn svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.btn-prototype {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border-radius: var(--sara-radius-md);
+  border: 1px dashed var(--sara-border-glass);
+  background: transparent;
+  color: var(--sara-text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: not-allowed;
+  opacity: 0.85;
+}
+
+.btn-prototype:hover {
+  background: var(--sara-glass-subtle);
+}
+
+.badge-prototype {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: var(--sara-radius-pill);
+  font-size: 10px;
+  font-weight: 600;
+  background: var(--sara-amber-100);
+  color: var(--sara-amber-700);
+  border: 1px solid var(--sara-border-glass);
+}
+
+.collab-section {
+  margin-top: auto;
+  padding-top: 18px;
+  border-top: 1px solid var(--sara-border-glass);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.collab-avatars {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  border: 2px solid var(--sara-os-canvas);
+}
+
+.avatar-coral {
+  background: var(--sara-coral-100);
+  color: var(--sara-coral-700);
+}
+
+.avatar-sapphire {
+  background: var(--sara-sapphire-100);
+  color: var(--docmd-action-text);
+}
+
+.collab-note {
+  font-size: 11px;
+  color: var(--sara-text-secondary);
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   7. Editor Pane & Toolbar
+   -------------------------------------------------------------------------- */
+.editor-pane {
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  overflow-y: auto;
+  position: relative;
+}
+
+.toolbar {
+  min-height: 54px;
+  background: var(--sara-glass-strong);
+  backdrop-filter: blur(25px) saturate(160%);
+  -webkit-backdrop-filter: blur(25px) saturate(160%);
+  border-bottom: 1px solid var(--sara-border-glass);
+  box-shadow:
+    inset 0 1px 1px 0 var(--sara-rim-specular),
+    var(--sara-shadow-glass-sm);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 20px;
+  flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.toolbar-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 6px 12px;
+  border-radius: var(--sara-radius-md);
+  border: 1px solid var(--sara-border-glass);
+  background: var(--sara-glass-subtle);
+  color: var(--sara-text-primary);
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: inset 0 1px 1px 0 var(--sara-rim-specular);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.toolbar-btn:not(:disabled):hover {
+  background: var(--sara-glass-base);
+  border-color: var(--sara-sapphire-500);
+}
+
+.toolbar-btn:disabled,
+.btn-prototype:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.toolbar-select {
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: var(--sara-radius-md);
+  border: 1px solid var(--sara-border-glass);
+  background: var(--sara-glass-strong);
+  color: var(--sara-text-primary);
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: inset 0 1px 1px 0 var(--sara-rim-specular);
+}
+
+.toolbar-select:focus {
+  outline: 2px solid var(--sara-sapphire-500);
+  border-color: var(--sara-sapphire-500);
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--sara-border-glass);
+  margin: 0 4px;
+}
+
+.toolbar-inert-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--sara-text-secondary);
+  padding: 4px 8px;
+  border-radius: var(--sara-radius-pill);
+  background: var(--sara-glass-subtle);
+  border: 1px solid var(--sara-border-glass);
+}
+
+/* --------------------------------------------------------------------------
+   8. Regla III · Cristal por Fuera, Papel por Dentro
+   Lienzo de lectura opaco con contraste optimizado
+   -------------------------------------------------------------------------- */
+.paper-scroll-container {
+  flex: 1;
+  padding: 32px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.paper {
+  background-color: var(--sara-os-canvas);
+  color: var(--sara-text-primary);
+  max-width: 780px;
+  width: 100%;
+  min-height: 720px;
+  margin: 0 auto;
+  padding: 64px 72px;
+  border-radius: var(--sara-radius-md);
+  border: 1px solid var(--sara-border-glass);
+  box-shadow:
+    var(--sara-shadow-glass-lg),
+    0 1px 3px rgba(0, 0, 0, 0.08);
+  outline: none;
+  transition: font-family 0.2s ease, text-align 0.2s ease;
+}
+
+.paper:focus-visible {
+  outline: 2px solid var(--sara-sapphire-500);
+  outline-offset: 4px;
+}
+
+.paper-heading {
+  font-family: var(--sara-font-display, inherit);
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.03em;
+  color: var(--sara-text-primary);
+  margin: 0 0 28px 0;
+  border-bottom: 2px solid var(--sara-border-glass);
+  padding-bottom: 16px;
+}
+
+.block {
+  padding: 14px 14px;
+  margin: 8px 0;
+  border-radius: var(--sara-radius-sm);
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--sara-text-primary);
+  transition: background-color 0.15s ease, outline 0.15s ease;
+  border: 1px solid transparent;
+}
+
+.block:hover {
+  background-color: var(--sara-sapphire-50);
+  border-color: var(--sara-sapphire-100);
+}
+
+.block.lead-block {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.6;
+  text-align: center;
+  color: var(--sara-text-primary);
+}
+
+/* --------------------------------------------------------------------------
+   9. Inspector (Representaciones & Especificación DocMD)
+   -------------------------------------------------------------------------- */
+.inspector {
+  background: var(--sara-glass-base);
+  backdrop-filter: blur(25px) saturate(160%);
+  -webkit-backdrop-filter: blur(25px) saturate(160%);
+  border-left: 1px solid var(--sara-border-glass);
+  box-shadow: inset 1px 0 0 0 var(--sara-border-subtle);
+  padding: 24px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+}
+
+.inspector-header-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.inspector-subtitle {
+  font-size: 12px;
+  color: var(--sara-text-secondary);
+  margin: 2px 0 8px 0;
+  line-height: 1.4;
+}
+
+.inspector-details {
+  border: 1px solid var(--sara-border-glass);
+  border-radius: var(--sara-radius-md);
+  background: var(--sara-glass-subtle);
+  overflow: hidden;
+  box-shadow: inset 0 1px 1px 0 var(--sara-rim-specular);
+}
+
+.inspector-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--sara-text-primary);
+  cursor: pointer;
+  user-select: none;
+  background: var(--sara-glass-base);
+}
+
+.inspector-summary:hover {
+  background: var(--sara-sapphire-100);
+  color: var(--docmd-action-text);
+}
+
+.format-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: var(--sara-radius-pill);
+  font-size: 10px;
+  font-weight: 700;
+  background: var(--sara-cyan-100);
+  color: var(--sara-cyan-700);
+  border: 1px solid var(--sara-border-glass);
+}
+
+.inspector-code-block {
+  margin: 0;
+  padding: 14px;
+  background: var(--sara-os-canvas);
+  color: var(--sara-text-primary);
+  font-family: var(--sara-font-mono, monospace);
+  font-size: 12px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-all;
+  overflow-x: auto;
+  max-height: 280px;
+  border-top: 1px solid var(--sara-border-glass);
+}
+
+.inspector-note-box {
+  background: var(--sara-glass-subtle);
+  border: 1px solid var(--sara-border-glass);
+  border-radius: var(--sara-radius-md);
+  padding: 12px 14px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--sara-text-secondary);
+}
+
+.inspector-note-box strong {
+  color: var(--sara-text-primary);
+}
+
+/* --------------------------------------------------------------------------
+   10. Institutional Footer
+   -------------------------------------------------------------------------- */
+.footer-attribution {
+  background: var(--sara-glass-strong);
+  backdrop-filter: blur(25px) saturate(160%);
+  -webkit-backdrop-filter: blur(25px) saturate(160%);
+  border-top: 1px solid var(--sara-border-glass);
+  box-shadow: inset 0 1px 1px 0 var(--sara-rim-specular);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 11px;
+  color: var(--sara-text-secondary);
+}
+
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.footer-link {
+  color: var(--docmd-accent-text);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.footer-link:hover {
+  text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   11. Keyboard Focus States & Accessibility
+   -------------------------------------------------------------------------- */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+summary:focus-visible,
+a:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--sara-sapphire-500) !important;
+  outline-offset: 2px !important;
+}
+
+/* --------------------------------------------------------------------------
+   12. Responsive Design (Down to 360px Mobile)
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  /* The wrapped brand header has no fixed height on narrow screens. */
+  .topbar { position: relative; }
+  .mobile-tabs-container { top: 0; }
+  .workspace {
+    grid-template-columns: 240px 1fr;
+  }
+
+  /* On medium screens, the inspector collapses into a stacked drawer or tabs */
+  .mobile-tabs-container {
+    display: block;
+  }
+
+  /* When tabs are active, we show only the active panel on mobile/tablet */
+  .workspace[data-active-panel="sidebar"] .sidebar {
+    display: flex;
+    grid-column: 1 / -1;
+    border-right: none;
+  }
+  .workspace[data-active-panel="sidebar"] .editor-pane,
+  .workspace[data-active-panel="sidebar"] .inspector {
+    display: none;
+  }
+
+  .workspace[data-active-panel="editor"] .editor-pane {
+    display: flex;
+    grid-column: 1 / -1;
+  }
+  .workspace[data-active-panel="editor"] .sidebar,
+  .workspace[data-active-panel="editor"] .inspector {
+    display: none;
+  }
+
+  .workspace[data-active-panel="inspector"] .inspector {
+    display: flex;
+    grid-column: 1 / -1;
+    border-left: none;
+  }
+  .workspace[data-active-panel="inspector"] .sidebar,
+  .workspace[data-active-panel="inspector"] .editor-pane {
+    display: none;
+  }
+
+  /* Fallback: If stacked view is selected */
+  .workspace[data-active-panel="all"] {
+    display: flex;
+    flex-direction: column;
+  }
+  .workspace[data-active-panel="all"] .sidebar,
+  .workspace[data-active-panel="all"] .editor-pane,
+  .workspace[data-active-panel="all"] .inspector {
+    display: flex;
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid var(--sara-border-glass);
+  }
+}
+
+@media (max-width: 680px) {
+  .topbar {
+    padding: 8px 12px;
+  }
+
+  .brand-title {
+    font-size: 17px;
+  }
+
+  .brand-institution-line {
+    font-size: 10px;
+  }
+
+  .paper {
+    padding: 32px 18px;
+    min-height: 500px;
+    margin: 8px 0;
+  }
+
+  .paper-heading {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .block {
+    font-size: 16px;
+    padding: 10px 8px;
+  }
+
+  .block.lead-block {
+    font-size: 18px;
+  }
+
+  .toolbar {
+    padding: 6px 10px;
+    gap: 6px;
+  }
+
+  .paper-scroll-container {
+    padding: 16px 8px;
+  }
+
+  .footer-attribution {
+    padding: 12px 14px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+/* Specific tuning for 360px ultra-compact mobile */
+@media (max-width: 380px) {
+  .topbar {
+    gap: 8px;
+  }
+
+  .brand-section {
+    gap: 8px;
+  }
+
+  .brand-mark-wrapper {
+    width: 36px;
+    height: 36px;
+  }
+
+  .brand-mark-wrapper img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .brand-title {
+    font-size: 16px;
+  }
+
+  .mobile-tab-btn {
+    font-size: 11px;
+    padding: 6px 4px;
+    gap: 4px;
+  }
+
+  .mobile-tab-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .status-pill {
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+
+  .toolbar-btn, .toolbar-select {
+    min-height: 44px;
+  }
+
+  .paper {
+    padding: 24px 12px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   13. Reduced Motion Support
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
