@@ -4,6 +4,15 @@ import { PresentationSchema, validateDocMD } from './model';
 const DIRECTIVE_OPENING = /^:::(\w+)\s+\{((?:"(?:\\.|[^"\\])*"|[^"}])*)\}\s*$/;
 const SHORTHAND_ID = /^[^\s{}"\\=]+$/;
 
+// Markdown fenced code blocks: backtick or tilde fences, up to 3 leading spaces,
+// closing fence uses the same character, is at least as long as the opener and
+// has only trailing whitespace. Backtick openers may not carry backticks in their info string.
+const FENCE_OPEN = /^ {0,3}(`{3,}|~{3,})(.*)$/;
+function fenceClosePattern(fence: string): RegExp {
+  const ch = fence[0];
+  return new RegExp(`^ {0,3}${ch}{${fence.length},}\\s*$`);
+}
+
 const PRESENTATION_KEYS: (keyof Presentation)[] = [
   'fontFamily',
   'fontSize',
@@ -66,9 +75,21 @@ export function parseDocMD(source: string): DocMD {
   const reservedIds = new Set<string>(['section-1']);
   // Reserve explicit IDs before assigning names to plain text or anonymous blocks.
   let insideDirective = false;
+  let fence: string | null = null;
   for (const line of lines) {
     if (insideDirective) {
-      if (line.trim() === ':::') insideDirective = false;
+      if (fence !== null) {
+        const close = fenceClosePattern(fence);
+        if (!close.test(line)) continue;
+        fence = null;
+        continue;
+      }
+      if (line.trim() === ':::') {
+        insideDirective = false;
+        continue;
+      }
+      const opening = line.match(FENCE_OPEN);
+      if (opening && !(opening[1][0] === '`' && opening[2].includes('`'))) fence = opening[1];
       continue;
     }
     const opening = line.match(DIRECTIVE_OPENING);
@@ -76,23 +97,38 @@ export function parseDocMD(source: string): DocMD {
       const { id } = parseDirectiveHeader(opening[2]);
       if (id !== undefined) reservedIds.add(id);
       insideDirective = true;
+      fence = null;
     }
   }
   const counter = { current: 1 };
   let current: Block | null = null;
   let contentLines: string[] = [];
+  fence = null;
 
   for (const line of lines) {
     // If we are inside an active directive, don't open a nested directive or replace current block.
-    // Content lines (including blank lines and nested :::) are treated as markdown content.
+    // Content lines (including blank lines and nested :::) are treated as markdown content,
+    // except that fenced code blocks keep literal ::: and fence-looking lines intact.
     if (current) {
+      if (fence !== null) {
+        const close = fenceClosePattern(fence);
+        if (!close.test(line)) {
+          contentLines.push(line);
+          continue;
+        }
+        fence = null;
+        contentLines.push(line);
+        continue;
+      }
       if (line.trim() === ':::') {
         current.markdown = contentLines.join('\n');
         sections[0].blocks.push(current);
         current = null;
-      } else {
-        contentLines.push(line);
+        continue;
       }
+      const opening = line.match(FENCE_OPEN);
+      if (opening && !(opening[1][0] === '`' && opening[2].includes('`'))) fence = opening[1];
+      contentLines.push(line);
       continue;
     }
 
